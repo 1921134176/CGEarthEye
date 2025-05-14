@@ -6,8 +6,7 @@
   <img width="500" alt="image" src="assets/logo.png">
   <br>
 </div>
-
-[\[🚀 Quick Start\]](https://www.jl1mall.com/) [\[📖 Report\]](https://arxiv.org/abs/2503.11070) [\[📹 Weight\]](https://pan.baidu.com/s/1YjPIQY_gdaOVUm5QNEDOlQ?pwd=cgwx)
+[\[🚀 Quick Start\]](https://www.jl1mall.com/) [\[📖 Report\]](https://arxiv.org/abs/2503.11070) [\[📹 Weight\]](https://pan.baidu.com/s/12bds0ZTMwyRVgv7Nkq51Aw?pwd=cgwx)
 
 
 ![CGEarthEye](assets/model.png)
@@ -36,7 +35,7 @@
 
 在应用方面，基于CGEarthEye，我们微调了20种应用模型，已上线吉林一号网[https://www.jl1mall.com/](吉林一号网)。
 
-![application](assets/application.png)
+<img src="assets/application.png" alt="application" style="zoom:50%;" />
 
 ## 微调
 
@@ -50,29 +49,64 @@ conda create -n CGEarthEye python=3.10
 conda activate CGEarthEye
 pip install -r requirements.txt
 ```
-### 场景分类
+### 数据准备
 
+#### 场景分类
 
-Here we provide 14 example scripts to demonstrate how to use Falcon to perform inference on 14 tasks. We provide many image samples in [here](https://github.com/TianHuiLab/Falcon/tree/main/image_samples) for you to try with.
+- [AID](captain-whu.github.io/AID/)
+- [NWPU_RESISC45](https://gcheng-nwpu.github.io/#Datasets)
 
 ```bash
-# Inference for Image Classification task
-python inference.py \
-    --checkpoint_path <path_to_the_checkpoint_you_want> \
-    --image_path image_samples/IMG_CLS/[IMG_CLS]_003_AID_3525_river_192_ori.png \
-    --post_process_type IMG_CLS \
-    --prompt "Classify the image."
+|-datasets/SceneClassification
+|----AID
+|    |---Airport
+|        |---airport_1.jpg
+|        |---airport_2.jpg
+|        |---    ···
+|    |---BareLand
+|        |---bareland_1.jpg
+|        |---    ···
+|    |---  ···
+|    |---train_80per.txt
+|    |---val_20per.txt
+|----NWPU_RESISC45
+|    |---airplane
+|        |---airplane_001.jpg
+|        |---    ···
+|    |---airport
+|        |---airport_0011.jpg
+|        |---    ···
+|    |---  ···
+|    |---train_80per.txt
+|    |---val_20per.txt
+...
+```
+
+#### 语义分割
+
+#### 变化检测
+
+#### 目标检测
+
+### 模型训练
+
+#### 场景分类
+
+```bash
+# 单机单卡
+python tools/train_sc.py \
+    config/SceneClassification/CGEarthEye-Giant-518-AID.py \
+    --amp
 ```
 ```bash
-# Inference for Visual Question Answering task
-python inference.py \
-    --checkpoint_path <path_to_the_checkpoint_you_want> \
-    --image_path image_samples/IMG_VQA/[IMG_VQA]_007_HRBEN_5965_1335_ori.png \
-    --post_process_type IMG_VQA \
-    --prompt "Is the number of roads equal to the number of residential areas?"
+# 单机多卡
+python tools/dist_train_sc.sh \
+    config/SceneClassification/CGEarthEye-Giant-518-AID.py
 ```
+#### 语义分割
+
 ```bash
-# Inference for Counting Target task
+# 单机单卡
 python inference.py \
     --checkpoint_path <path_to_the_checkpoint_you_want> \
     --image_path image_samples/IMG_CT/[IMG_CT]_016_DIOR_25156_13931_ori.png \
@@ -80,13 +114,15 @@ python inference.py \
     --prompt "Count the number of ship."
 ```
 ```bash
-# Inference for Image Caption task
+# 单机多卡
 python inference.py \
     --checkpoint_path <path_to_the_checkpoint_you_want> \
     --image_path image_samples/IMG_CAP/[IMG_CAP]_010_RSICD_208_church_56_ori.png \
     --post_process_type IMG_CAP \
     --prompt "Describe the image."
 ```
+#### 变化检测
+
 ```bash
 # Inference for Detailed Image Caption task
 python inference.py \
@@ -103,6 +139,8 @@ python inference.py \
     --post_process_type REG_CLS_HBB \
     --prompt "Classify the region of <box><855><297><891><355></box>.\nUse one or a few words."
 ```
+#### 目标检测
+
 ```bash
 # Inference for Region Classification-OBB task
 python inference.py \
@@ -119,6 +157,27 @@ python inference.py \
     --post_process_type REG_DET_HBB \
     --prompt "Detect all stadium in the image."
 ```
+
+### 模型测试
+```bash
+# 单机单卡
+python tools/test_sc.py \
+    config/SceneClassification/CGEarthEye-Giant-518-AID.py
+```
+```bash
+# 单机多卡
+python tools/dist_test_sc.sh \
+    config/SceneClassification/CGEarthEye-Giant-518-AID.py
+```
+
+#### 场景分类
+
+#### 语义分割
+
+#### 变化检测
+
+#### 目标检测
+
 ```bash
 # Inference for Region Detection-OBB task
 python inference.py \
@@ -169,122 +228,6 @@ python inference.py \
     --prompt "Find changes in the two images."
 ```
 
-</details>
-
-<details>
-  <summary>Datasets preperation (click to expand)</summary>
-
-Unzip and place/link the dataset at the root path of this repo. The directory structure should be as follows:
-```bash
-|-FCD
-|----json_train_taskall
-|    |---train_task14_all.json
-|    |---train_task14_all_multi-instructions-version.json
-|----Task01_IMG_CLS
-|    |---test
-|    |---train
-|----Task02_IMG_CAP
-|    |---test
-|    |---train
-|----Task03_IMG_CAP_DETAILED
-|    |---test
-|    |---train
-...
-```
-
-</details>
-
-<details>
-  <summary>Training Falcon with Falcon_SFT (click to expand)</summary>
-
-1. Download the checkpoints you want and place them at the root path of this repo. The directory structure should be as follows:
-```bash
-|-model_checkpoints
-|----Falcon-Single-Instruction-0.7B
-|    |---pytorch_model.bin
-|    ...
-|----Falcon-Multi-Instruction-0.7B
-|    |---pytorch_model.bin
-|    ...
-|...
-```
-
-2. Here we give an example of a training script used for single instruction training. You may runing this script on master machine node and every slave machine node you have. Note that some parameters in this script should be modified according to the machine node on which it is running.
-
-```bash
-RANK=0 # The node idx of current machine node
-WORLD_SIZE=1 # The total number of machine node
-GPU_NUM=8 # The number of gpu in each machine node
-MASTER_ADDR=localhost # The IP address of the master machine node
-MASTER_PORT=12355 # The port of the master machine node
-
-python multi_node_distributed_train.py \
-    --node_rank $RANK \
-    --local_size $GPU_NUM
-    --world_size $(($GPU_NUM*$WORLD_SIZE)) \
-    --master_addr $MASTER_ADDR \
-    --master_port $MASTER_PORT \
-    --checkpoint_path <path_to_the_checkpoint_you_want> \
-    --dataset Falcon_SFT \
-    --label_json FCD/json_train_taskall/train_task14_all.json \
-    --num_workers 2 \
-    --batch_size 7 \
-    --epochs 3 \
-    --run_name <name_of_this_training_task>
-```
-</details>
-
-<details>
-  <summary>Evaluating Falcon with Falcon_SFT (click to expand)</summary>
-
-1. Here we provide an example of the evaluation program to evaluate Falcon using Falcon_SFT dataset with the json annotation file.
-
-```bash
-GPU=0
-CUDA_VISIBLE_DEVICES=$GPU python single_gpu_inference_eval.py \
-    --model-path model_checkpoints/<checkpoint_dir_name> \
-    --eval-file FCD/<task_dir>/test/Annotation_test.json \
-    --model-name Falcon \
-    --result-path ./ \
-    --batch_size 8 \
-    --num_workers 2 \
-```
-
-2. Running Evaluation Scripts for Single File and Batch Processing. To calculate evaluation metrics using the evaluation.py script, follow the commands below depending on whether you want to process a single file or all files in a folder.
-   
- - `Process a Single Evaluation File` Run the command below, replacing "eval/tmp/model/falcon_CLS.json" with the path to your evaluation file and "falcon" with your model name:
-
-```bash
-python eval/evaluation.py \
-    --evaluation-file eval/tmp/model/falcon_CLS.json \
-    --model_name falcon
-```
-- `Process All Evaluation Files in a Folder` Run the command below, replacing "eval/tmp/model/" with the path to the folder containing your evaluation files and "falcon" with your model name:
-
-```bash
-python eval/evaluation.py \
-    --evaluation-folder eval/tmp/model/ \
-    --model_name falcon
-```
-</details>
-
 ## License
 
 This project is released under the [MIT license](LICENSE). Parts of this project contain code and models from other sources, which are subject to their respective licenses.
-
-## Citation
-
-If you find this project useful in your research, please consider cite:
-
-```BibTeX
-@article{yao2025falcon,
-  title={Falcon: A Remote Sensing Vision-Language Foundation Model},
-  author={kelu, Yao and Nuo, Xu and Rong, Yang and Yingying, Xu and Zhuoyan, Gao and Titinunt, Kitrungrotsakul and yi, Ren and Pu, Zhang and Jin, Wang and Ning, Wei and Chao, Li},
-  journal={arXiv preprint arXiv:2503.11070},
-  year={2025}
-}
-```
-
-## Acknowledgement
-
-Falcon is built with reference to the code of the following projects: [Florence-2-base-ft](https://huggingface.co/microsoft/Florence-2-base-ft), [Florence-2-large-ft](https://huggingface.co/microsoft/Florence-2-large-ft), [florence2-finetuning](https://github.com/andimarafioti/florence2-finetuning). Thanks for their awesome work!
