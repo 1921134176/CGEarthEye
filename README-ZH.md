@@ -1,6 +1,6 @@
 <div align="center">
 
-# <img width="60" alt="image" src="assets/gaofen.png"> CGEarthEye: Construction and Application of Jilin-1 Remote Sensing Foundation Model
+# <img width="60" alt="image" src="assets/gaofen.png"> CGEarthEye: 吉林一号大模型构建与应用
 
 <div align="center">
   <img width="500" alt="image" src="assets/logo.png">
@@ -14,97 +14,44 @@
 
 </div>
 
-## Introduction
+## 介绍
 
 为提升吉林一号遥感卫星影像应用的智能化水平，解决视觉大模型在高分辨率卫星遥感影像上性能受限问题，我们构建了包含21亿参数量的吉林一号遥感大模型——CGEarthEye。CGEarthEye结合了生成式与对比式自监督学习算法的优势，具备对遥感影像全局与局部建模能力，并利用了全球分布的1500万高质量亚米级吉林一号卫星遥感影像样本，在16张A800 GPU上进行了训练。对比视觉领域大模型，CGEarthEye仅仅微调解码器的情况下，各项遥感任务显著优于全量微调的视觉领域大模型。对比遥感领域大模型，CGEarthEye具备大多数遥感领域大模型不具备的冻结微调能力，极大缩短应用微调时间与显存，缓解了大模型下游微调困难问题，并在4项任务10个数据集上实现冻结性能SOTA。
 
-在应用方面，基于CGEarthEye，我们微调了20种应用模型，已上线吉林一号网[https://www.jl1mall.com/](吉林一号网)。最后，我们为吉林一号数据集编写了训练配置，用户可根据业务快速利用CGEarthEye完成应用的迭代。
+## 骨干
+
+|       模型       | 层数 | 编码维度 | 隐藏层维度 | 注意力头 | 参数量/M |
+| :--------------: | :--: | :------: | :--------: | :------: | :------: |
+| CGEarthEye-Small |  12  |   384    |    1536    |    6     |    22    |
+| CGEarthEye-Base  |  12  |   768    |    3072    |    12    |    86    |
+| CGEarthEye-Large |  24  |   1024   |    4096    |    16    |   307    |
+| CGEarthEye-Huge  |  32  |   1280   |    5120    |    16    |   632    |
+| CGEarthEye-Giant |  40  |   1536   |    6144    |    24    |   1100   |
+
+## 测试
+
+![experiments](assets/experiments.png)
+
+## 应用
+
+在应用方面，基于CGEarthEye，我们微调了20种应用模型，已上线吉林一号网[https://www.jl1mall.com/](吉林一号网)。
 
 ![application](assets/application.png)
 
-We are excited to introduce Falcon, which offers a unified, prompt-based paradigm that effectively executes comprehensive and complex remote sensing vision tasks. Falcon demonstrates powerful understanding and reasoning abilities at the image, region, and pixel levels. Specifically, given simple natural language instructions and remote sensing images, Falcon can produce impressive results in text form across 14 distinct tasks, i.e., image classification, object detection, segmentation, image captioning, and etc.
+## 微调
 
-## Demonstration
-Here we provide some demonstrations of Falcon on several remote sensing image interpretation tasks:
+最后，我们为吉林一号数据集编写了训练配置，用户可根据业务快速利用CGEarthEye完成应用的迭代。
 
-<details>
-  <summary>Demo for image-level tasks: (click to expand)</summary>
-<div align="center">
-  <img width="800" alt="image" src="assets/demo1.gif">
-  <br>
-</div>
-</details>
+### 环境
 
-<details>
-  <summary>Demo for region-level tasks: (click to expand)</summary>
-<div align="center">
-  <img width="800" alt="image" src="assets/demo2.gif">
-  <br>
-</div>
-</details>
-
-
-## News 🚀🚀🚀
-
-<!-- - `2025/03/15`: The Falcon_SFT dataset has been released. -->
-
-- `2024/11/27`: Falcon has been released. The model checkpoints is now available on HuggingFace & modelscope, and both training / evaluation scripts are open-sourced. The Falcon_SFT dataset is coming soon!
-
-
-## Model Zoo
-
-<table>
-  <tr>
-    <th>Model Name</th>
-    <th>Model Size</th>
-    <th>HF&nbsp;Link</th>
-    <th>MS&nbsp;Link</th>
-  </tr>
-  <tr>
-    <td>Falcon-Single-Instruction-Base</td>
-    <td>0.3B</td>
-    <td><a href="https://huggingface.co/TianHuiLab/Falcon-Single-Instruction-Base">🤗 link</a></td>
-    <td><a href="https://www.modelscope.cn/models/TianHuiLab/Falcon-Single-Instruction-Base">🤖 link</a></td>
-  </tr>
-  <tr>
-    <td>Falcon-Single-Instruction-Large</td>
-    <td>0.7B</td>
-    <td><a href="https://huggingface.co/TianHuiLab/Falcon-Single-Instruction-Large">🤗 link</a></td>
-    <td><a href="https://www.modelscope.cn/models/TianHuiLab/Falcon-Single-Instruction-Large">🤖 link</a></td>
-  </tr>
-  <tr>
-    <td>Falcon-Multi-Instruction-Large</td>
-    <td>0.7B</td>
-    <td><a href="https://huggingface.co/TianHuiLab/Falcon-Multi-Instruction-Large">🤗 link</a></td>
-    <td><a href="https://www.modelscope.cn/models/TianHuiLab/Falcon-Multi-Instruction-Large">🤖 link</a></td>
-  </tr>
-</table>
-
-<!-- ## Falcon_SFT
-Falcon_SFT dataset can be found in [here](https://www.modelscope.cn/datasets/TianHuiLab/FCD-78M) and [here](https://www.modelscope.cn/datasets/TianHuiLab/FCD-78M-2). -->
-
-## What can Falcon do?
-![opencompass](assets/task_example.png)
-
-## Quick Start with Falcon
-
-<details>
-  <summary>Installation (click to expand)</summary>
-You can use the following script to install the environment：
 
 ```bash
-conda create -n falon python=3.10
-conda activate falcon
+conda create -n CGEarthEye python=3.10
+conda activate CGEarthEye
 pip install -r requirements.txt
 ```
-Optionally, we also provide a Docker image in [here](https://hub.docker.com/r/tianhuilab/falcon/tags) for fast deployment of the environment. You can use the following script to pull this Docker image：
-```bash
-docker pull tianhuilab/falcon:1209
-```
-</details>
+### 场景分类
 
-<details>
-  <summary>Inference on 14 tasks (click to expand)</summary>
 
 Here we provide 14 example scripts to demonstrate how to use Falcon to perform inference on 14 tasks. We provide many image samples in [here](https://github.com/TianHuiLab/Falcon/tree/main/image_samples) for you to try with.
 
