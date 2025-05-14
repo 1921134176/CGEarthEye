@@ -6,6 +6,7 @@
   <img width="300" alt="image" src="assets/logo.png">
   <br>
 </div>
+
 [\[🚀 Quick Start\]](https://www.jl1mall.com/) [\[📖 Report\]](./report) [\[📹 Weight\]](https://pan.baidu.com/s/12bds0ZTMwyRVgv7Nkq51Aw?pwd=cgwx)
 
 
@@ -35,7 +36,10 @@
 
 在应用方面，基于CGEarthEye，我们微调了20种应用模型，已上线吉林一号网[https://www.jl1mall.com/](吉林一号网)。
 
-<img src="assets/application.png" alt="application" style="zoom:50%;" />
+<div align="center">
+  <img width="500" alt="image" src="assets/application.png">
+  <br>
+</div>
 
 ## 微调
 
