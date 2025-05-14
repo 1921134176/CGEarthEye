@@ -6,7 +6,7 @@
   <img width="500" alt="image" src="assets/logo.png">
   <br>
 </div>
-[\[🚀 Quick Start\]](https://www.jl1mall.com/) [\[📖 Report\]](./report) [\[📹 Weight\]](https://pan.baidu.com/s/12bds0ZTMwyRVgv7Nkq51Aw?pwd=cgwx)
+[\[🚀 Quick Start\]](https://www.jl1mall.com/) [\[📖 Report\]](https://arxiv.org/abs/2503.11070) [\[📹 Weight\]](https://pan.baidu.com/s/12bds0ZTMwyRVgv7Nkq51Aw?pwd=cgwx)
 
 
 ![CGEarthEye](assets/model.png)
