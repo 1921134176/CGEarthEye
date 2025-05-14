@@ -159,6 +159,9 @@ python inference.py \
 ```
 
 ### 模型测试
+
+#### 场景分类
+
 ```bash
 # 单机单卡
 python tools/test_sc.py \
@@ -169,8 +172,6 @@ python tools/test_sc.py \
 python tools/dist_test_sc.sh \
     config/SceneClassification/CGEarthEye-Giant-518-AID.py
 ```
-
-#### 场景分类
 
 #### 语义分割
 
