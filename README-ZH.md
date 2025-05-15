@@ -9,7 +9,6 @@
 
 [\[🚀 Quick Start\]](https://www.jl1mall.com/) [\[📖 Report\]](./report) [\[📹 Weight\]](https://pan.baidu.com/s/12bds0ZTMwyRVgv7Nkq51Aw?pwd=cgwx)
 
-
 ![CGEarthEye](assets/model.png)
 
 ## Update 🚀🚀🚀
