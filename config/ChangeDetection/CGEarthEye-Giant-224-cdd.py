@@ -1,10 +1,10 @@
-dataset_root = r'./datasets/ChangeDetection/LEVIR-CD'
-dataset_type = 'LEVIR_CD_Dataset'
+dataset_root = r'./datasets/ChangeDetection/CDD'
+dataset_type = 'SVCD_Dataset'
 model_path = r"./model_zoo/CGEarthEye-Giant-518.pth"
-batch_crop_size = (518, 518)
-train_batch_size = 8
-val_batch_size = 8
-work_dir = r'./res/LEVIR-CD'
+batch_crop_size = (224, 224)
+train_batch_size = 16
+val_batch_size = 16
+work_dir = r'./res/CDD'
 
 default_scope = 'opencd'
 env_cfg = dict(
@@ -27,6 +27,7 @@ train_pipeline = [
         cat_max_ratio=0.75, crop_size=batch_crop_size, type='MultiImgRandomCrop'),
     dict(direction='horizontal', prob=0.5, type='MultiImgRandomFlip'),
     dict(direction='vertical', prob=0.5, type='MultiImgRandomFlip'),
+    dict(type='MultiImgExchangeTime', prob=0.5),
     dict(
         brightness_delta=10,
         contrast_range=(
@@ -45,8 +46,8 @@ train_pipeline = [
 test_pipeline = [
     dict(type='MultiImgLoadImageFromFile'),
     dict(keep_ratio=True, scale=(
-        1024,
-        1024,
+        256,
+        256,
     ), type='MultiImgResize'),
     dict(type='MultiImgLoadAnnotations'),
     dict(type='MultiImgPackSegInputs'),
@@ -96,31 +97,8 @@ train_dataloader = dict(
             img_path_to='train/Image2',
             seg_map_path='train/Label'),
         data_root=dataset_root,
-        pipeline=[
-            dict(type='MultiImgLoadImageFromFile'),
-            dict(type='MultiImgLoadAnnotations'),
-            dict(degree=180, prob=0.5, type='MultiImgRandomRotate'),
-            dict(
-                cat_max_ratio=0.75,
-                crop_size=batch_crop_size,
-                type='MultiImgRandomCrop'),
-            dict(direction='horizontal', prob=0.5, type='MultiImgRandomFlip'),
-            dict(direction='vertical', prob=0.5, type='MultiImgRandomFlip'),
-            dict(
-                brightness_delta=10,
-                contrast_range=(
-                    0.8,
-                    1.2,
-                ),
-                hue_delta=10,
-                saturation_range=(
-                    0.8,
-                    1.2,
-                ),
-                type='MultiImgPhotoMetricDistortion'),
-            dict(type='MultiImgPackSegInputs'),
-        ],
-        type='LEVIR_CD_Dataset'),
+        pipeline=train_pipeline,
+        type='SVCD_Dataset'),
     num_workers=8,
     persistent_workers=True,
     sampler=dict(shuffle=True, type='InfiniteSampler'))
@@ -133,16 +111,8 @@ val_dataloader = dict(
             img_path_to='val/Image2',
             seg_map_path='val/Label'),
         data_root=dataset_root,
-        pipeline=[
-            dict(type='MultiImgLoadImageFromFile'),
-            dict(keep_ratio=True, scale=(
-                1024,
-                1024,
-            ), type='MultiImgResize'),
-            dict(type='MultiImgLoadAnnotations'),
-            dict(type='MultiImgPackSegInputs'),
-        ],
-        type='LEVIR_CD_Dataset'),
+        pipeline=test_pipeline,
+        type='SVCD_Dataset'),
     num_workers=1,
     persistent_workers=True,
     sampler=dict(shuffle=False, type='DefaultSampler'))
@@ -155,16 +125,8 @@ test_dataloader = dict(
             img_path_to='test/Image2',
             seg_map_path='test/Label'),
         data_root=dataset_root,
-        pipeline=[
-            dict(type='MultiImgLoadImageFromFile'),
-            dict(keep_ratio=True, scale=(
-                1024,
-                1024,
-            ), type='MultiImgResize'),
-            dict(type='MultiImgLoadAnnotations'),
-            dict(type='MultiImgPackSegInputs'),
-        ],
-        type='LEVIR_CD_Dataset'),
+        pipeline=test_pipeline,
+        type='SVCD_Dataset'),
     num_workers=4,
     persistent_workers=True,
     sampler=dict(shuffle=False, type='DefaultSampler'))
@@ -185,25 +147,11 @@ test_evaluator = dict(
 norm_cfg = dict(requires_grad=True, type='SyncBN')
 data_preprocessor = dict(
     bgr_to_rgb=True,
-    mean=[
-        122.7709,
-        116.746,
-        104.0937,
-        122.7709,
-        116.746,
-        104.0937,
-    ],
+    mean=[123.675, 116.28, 103.53] * 2,
     pad_val=0,
     seg_pad_val=255,
-    size_divisor=0, 
-    std=[
-        68.5005,
-        66.6322,
-        70.3232,
-        68.5005,
-        66.6322,
-        70.3232,
-    ],
+    size_divisor=0,  
+    std=[58.395, 57.12, 57.375] * 2,
     test_cfg=dict(size_divisor=0), 
     type='DualInputSegDataPreProcessor')
 
@@ -221,7 +169,7 @@ model = dict(
         layer_cfgs=dict(ffn_type='swiglu_fused'),
         frozen_stages=40,
         init_cfg=dict(type='Pretrained',
-                      checkpoint=model_path,
+                      checkpoint='https://download.openmmlab.com/mmsegmentation/v0.5/pretrain/segformer/mit_b2_20220624-66e8bf70.pth',
                       prefix='backbone'
                       ),
     ),
@@ -241,7 +189,7 @@ model = dict(
                 embed_dims=64,
                 in_channels=3,
                 init_cfg=dict(
-                    checkpoint='https://download.openmmlab.com/mmsegmentation/v0.5/pretrain/segformer/mit_b2_20220624-66e8bf70.pth',
+                    checkpoint=head_path,
                     type='Pretrained'),
                 mlp_ratio=4,
                 num_heads=[
@@ -292,7 +240,7 @@ model = dict(
         224,
         224,
     )),
-    test_cfg=dict(crop_size=batch_crop_size, mode='slide', stride=(batch_crop_size[0] // 2, batch_crop_size[1] // 2)),
+    test_cfg=dict(mode='whole'),
     train_cfg=dict(),
     type='BAN')
 
@@ -341,8 +289,8 @@ default_hooks = dict(
     timer=dict(type='IterTimerHook'),
     visualization=dict(
         img_shape=(
-            1024,
-            1024,
+            256,
+            256,
             3,
         ), interval=1, type='CDVisualizationHook'))
 

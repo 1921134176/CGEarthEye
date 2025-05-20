@@ -1,23 +1,30 @@
-_base_ = './default_runtime.py'
+dataset_root = r'./datasets/ChangeDetection/SYSU-CD'
 dataset_type = 'LEVIR_CD_Dataset'
-data_root = r'E:\cgeartheye-main\cgeartheye\datasets\ChangeDetection\SYSU-CD'
-train_crop_size = (224, 224)
-test_crop_size = (224, 224)
+backbone_checkpoint = r"./model_zoo/CGEarthEye-Giant-518.pth"
+batch_crop_size = (224, 224)
 train_batch_size = 8
 val_batch_size = 8
-model_init_img_size = (224, 224)
-frozen_stages = 40
-backbone_checkpoint = r"E:\cgeartheye-main\cgeartheye\model_zoo\20240724_dinov2_vitg-p14-droppathrate0.4_20240711_205W_8xb56_449999i_224x224_mmseg.pth"
-warmup_LinearLR = 10
-epoch = 200
-work_dir = r'E:\SYSU-CD'
+work_dir = r'./res/SYSU-CD'
 
-crop_size = train_crop_size
+default_scope = 'opencd'
+env_cfg = dict(
+    cudnn_benchmark=True,
+    mp_cfg=dict(mp_start_method='fork', opencv_num_threads=0),
+    dist_cfg=dict(backend='nccl'),
+)
+vis_backends = [dict(type='CDLocalVisBackend')]
+visualizer = dict(
+    type='CDLocalVisualizer', 
+    vis_backends=vis_backends, name='visualizer', alpha=1.0)
+log_processor = dict(by_epoch=False)
+log_level = 'INFO'
+
+
 train_pipeline = [
     dict(type='MultiImgLoadImageFromFile'),
     dict(type='MultiImgLoadAnnotations'),
     dict(type='MultiImgRandomRotate', prob=0.5, degree=180),
-    dict(type='MultiImgRandomCrop', crop_size=crop_size, cat_max_ratio=0.75),
+    dict(type='MultiImgRandomCrop', crop_size=batch_crop_size, cat_max_ratio=0.75),
     dict(type='MultiImgRandomFlip', prob=0.5, direction='horizontal'),
     dict(type='MultiImgRandomFlip', prob=0.5, direction='vertical'),
     dict(type='MultiImgExchangeTime', prob=0.5),
@@ -31,7 +38,7 @@ train_pipeline = [
 ]
 test_pipeline = [
     dict(type='MultiImgLoadImageFromFile'),
-    dict(type='MultiImgResize', scale=test_crop_size, keep_ratio=True),
+    dict(type='MultiImgResize', scale=batch_crop_size, keep_ratio=True),
     # add loading annotation after ``Resize`` because ground truth
     # does not need to do resize data transform
     dict(type='MultiImgLoadAnnotations'),
@@ -56,7 +63,7 @@ tta_pipeline = [
         ])
 ]
 train_dataloader = dict(
-    batch_size=train_batch_size,
+    batch_size=batch_crop_size,
     num_workers=4,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
@@ -71,7 +78,7 @@ train_dataloader = dict(
         pipeline=train_pipeline))
 
 val_dataloader = dict(
-    batch_size=val_batch_size,
+    batch_size=batch_crop_size,
     num_workers=4,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
@@ -84,7 +91,7 @@ val_dataloader = dict(
             img_path_to='val/Image2'),
         pipeline=test_pipeline))
 test_dataloader = dict(
-    batch_size=val_batch_size,
+    batch_size=batch_crop_size,
     num_workers=4,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
@@ -121,7 +128,7 @@ model = dict(
     backbone=dict(
             type='mmpretrain.VisionTransformer',
             arch='dinov2-giant',
-            img_size=model_init_img_size,
+            img_size=batch_crop_size,
             patch_size=14,
             out_type='featmap',
             out_indices=(9, 19, 29, 39),
@@ -211,6 +218,6 @@ default_hooks = dict(
     checkpoint=dict(type='CheckpointHook', by_epoch=True, interval=1, save_best='mIoU', max_keep_ckpts=1),
     sampler_seed=dict(type='DistSamplerSeedHook'),
     visualization=dict(type='CDVisualizationHook', interval=1,
-                       img_shape=(1024, 1024, 3)))
+                       img_shape=(256, 256, 3)))
 
 log_processor = dict(type='LogProcessor', window_size=50, by_epoch=True)
