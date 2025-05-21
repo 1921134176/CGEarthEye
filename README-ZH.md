@@ -19,7 +19,7 @@
 
 ## 介绍
 
-为提升吉林一号遥感卫星影像应用的智能化水平，解决视觉大模型在高分辨率卫星遥感影像上性能受限问题，我们构建了包含21亿参数量的吉林一号遥感大模型——CGEarthEye。CGEarthEye结合了生成式与对比式自监督学习算法的优势，具备对遥感影像全局与局部建模能力，并利用了全球分布的1500万高质量亚米级吉林一号卫星遥感影像样本，在16张A800 GPU上进行了训练。对比视觉领域大模型，CGEarthEye仅仅微调解码器的情况下，各项遥感任务显著优于全量微调的视觉领域大模型。对比遥感领域大模型，CGEarthEye具备大多数遥感领域大模型不具备的冻结微调能力，极大缩短应用微调时间与显存，缓解了大模型下游微调困难问题，并在4项任务10个数据集上实现冻结性能SOTA。
+为提升吉林一号遥感卫星影像应用的智能化水平，解 决视觉大模型在高分辨率卫星遥感影像上性能受限问题，我们构建了包含21亿参数量的吉林一号遥感大模型——CGEarthEye。CGEarthEye结合了生成式与对比式自监督学习算法的优势，具备对遥感影像全局与局部建模能力，并利用了全球分布的1500万高质量亚米级吉林一号卫星遥感影像样本，在16张A800 GPU上进行了训练。对比视觉领域大模型，CGEarthEye仅仅微调解码器的情况下，各项遥感任务显著优于全量微调的视觉领域大模型。对比遥感领域大模型，CGEarthEye具备大多数遥感领域大模型不具备的冻结微调能力，极大缩短应用微调时间与显存，缓解了大模型下游微调困难问题，并在4项任务10个数据集上实现冻结性能SOTA。
 
 ## 骨干
 
@@ -94,7 +94,47 @@ pip install -r requirements.txt
 #### 语义分割
 
 #### 变化检测
-
+- [LEVIR-CD](https://opendatalab.com/OpenDataLab/LEVIR-CD)
+- [SYSU-CD](https://github.com/liumency/SYSU-CD)
+- [CDD](https://paperswithcode.com/dataset/cdd-dataset-season-varying)
+```bash
+|-datasets/ChangeDetection
+|----SYSU-CD
+|    |---train
+|        |---Image1
+|           |---00000.png
+|           |---    ···
+|        |---Image2
+|           |---00000.png
+|           |---    ···
+|        |---Label
+|           |---00000.png
+|           |---    ···
+|    |---val
+|        |---Image1
+|           |---00000.png
+|           |---    ···
+|        |---Image2
+|           |---00000.png
+|           |---    ···
+|        |---Label
+|           |---00000.png
+|           |---    ···
+|    |---test
+|        |---Image1
+|           |---00000.png
+|           |---    ···
+|        |---Image2
+|           |---00000.png
+|           |---    ···
+|        |---Label
+|           |---00000.png
+|           |---    ···
+|----LEVIR-CD
+|...
+|----CDD
+|...
+```
 #### 目标检测
 - [DIOR / DIOR-R](www.escience.cn/people/JunweiHan/DIOR.html)
 
@@ -174,20 +214,12 @@ python inference.py \
 #### 变化检测
 
 ```bash
-# Inference for Detailed Image Caption task
-python inference.py \
-    --checkpoint_path <path_to_the_checkpoint_you_want> \
-    --image_path image_samples/IMG_CAP_DETAILED/[IMG_CAP_DETAILED]_026_RSICD_126_commercial_5_ori.png \
-    --post_process_type IMG_CAP_DETAILED \
-    --prompt "Describe the image in detail."
+# 单机单卡
+python ./tools/train_cd.py config/ChangeDetection/CGEarthEye-Giant-518-levircd.py
 ```
 ```bash
-# Inference for Region Classification-HBB task
-python inference.py \
-    --checkpoint_path <path_to_the_checkpoint_you_want> \
-    --image_path image_samples/REG_CLS_HBB/[REG_CLS_HBB]_005_DIOR_3829_12264_ori.png \
-    --post_process_type REG_CLS_HBB \
-    --prompt "Classify the region of <box><855><297><891><355></box>.\nUse one or a few words."
+# 单机多卡
+bash ./tools/dist_train_cd.sh config/ChangeDetection/CGEarthEye-Giant-518-levircd.py 4
 ```
 #### 目标检测
 
@@ -211,21 +243,14 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 bash tools/dist_train_obb.sh config/ObjectDetection
 
 #### 场景分类
 
-```bash
-# 单机单卡
-python tools/test_sc.py \
-    config/SceneClassification/CGEarthEye-Giant-518-AID.py
-```
-```bash
-# 单机多卡
-python tools/dist_test_sc.sh \
-    config/SceneClassification/CGEarthEye-Giant-518-AID.py
-```
 
 #### 语义分割
 
 #### 变化检测
-
+```bash
+# 单机单卡
+python ./tools/test_cd.py config/ChangeDetection/CGEarthEye-Giant-518-levircd.py work_dir/last.pth
+```
 #### 目标检测
 
 ```bash
