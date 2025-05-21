@@ -96,6 +96,47 @@ pip install -r requirements.txt
 #### 变化检测
 
 #### 目标检测
+- [DIOR / DIOR-R](www.escience.cn/people/JunweiHan/DIOR.html)
+
+
+```bash
+|-datasets/ObjectDetection
+|----DIOR
+|    |---images
+|        |---trainval/
+|        |    |---00001.jpg
+|        |    |---00002.jpg
+|        |    |---  ...
+|        |---test/
+|        |    |---11726.jpg
+|        |    |---11727.jpg
+|        |    |---  ...
+|    |---Annotations
+|        |---trainval.json
+|        |---test.json
+
+|----DIOR-R
+|    |---images
+|        |---trainval/
+|        |    |---00001.jpg
+|        |    |---00002.jpg
+|        |    |---  ...
+|        |---test/
+|        |    |---11726.jpg
+|        |    |---11727.jpg
+|        |    |---  ...
+|    |---ImageSets
+|        |---Main
+|        |    |---train.txt
+|        |    |---val.txt
+|        |    |---test.txt
+|    |---Annotations
+|        |---Oriented Bounding Boxes
+|        |    |---00001.xml
+|        |    |---00002.xml
+|        |    |---  ....
+```
+
 
 ### 模型训练
 
@@ -151,20 +192,19 @@ python inference.py \
 #### 目标检测
 
 ```bash
-# Inference for Region Classification-OBB task
-python inference.py \
-    --checkpoint_path <path_to_the_checkpoint_you_want> \
-    --image_path image_samples/REG_CLS_OBB/[REG_CLS_OBB]_001_DIOR_1_11726_ori.png \
-    --post_process_type REG_CLS_OBB \
-    --prompt "Classify the region of <quad><703><420><703><292><571><292><571><420></quad>.\nUse one or a few words."
+# 水平框检测（MMDetection3.x）
+## 单机单卡
+python tools/train_hbb.py config/ObjectDetection/HBB/CGEarthEye-Giant-784-DIOR.py
+## 单机多卡
+CUDA_VISIBLE_DEVICES=0,1,2,3 bash tools/dist_train_hbb.sh config/ObjectDetection/HBB/CGEarthEye-Giant-784-DIOR.py 4
 ```
+
 ```bash
-# Inference for Region Detection-HBB task
-python inference.py \
-    --checkpoint_path <path_to_the_checkpoint_you_want> \
-    --image_path image_samples/REG_DET_HBB/[REG_DET_HBB]_004_DIOR_5212_12735_ori.png \
-    --post_process_type REG_DET_HBB \
-    --prompt "Detect all stadium in the image."
+# 旋转框检测（MMRotate1.x）
+## 单机单卡
+python tools/train_obb.py config/ObjectDetection/OBB/CGEarthEye-Giant-784-DIORR.py
+## 单机多卡
+CUDA_VISIBLE_DEVICES=0,1,2,3 bash tools/dist_train_obb.sh config/ObjectDetection/OBB/CGEarthEye-Giant-784-DIORR.py 4
 ```
 
 ### 模型测试
@@ -187,6 +227,30 @@ python tools/dist_test_sc.sh \
 #### 变化检测
 
 #### 目标检测
+
+```bash
+# 水平框检测（MMDetection3.x）
+## 单机单卡
+python tools/test_hbb.py \
+    config/ObjectDetection/HBB/CGEarthEye-Giant-784-DIOR.py \
+    Path/To/Your/Weight/hbb_model.pth
+## 单机多卡
+CUDA_VISIBLE_DEVICES=0,1,2,3 bash tools/dist_test_hbb.sh \
+    config/ObjectDetection/HBB/CGEarthEye-Giant-784-DIOR.py \
+    Path/To/Your/Weight/hbb_model.pth 4
+```
+
+```bash
+# 旋转框检测（MMRotate1.x）
+## 单机单卡
+python tools/test_obb.py \
+    config/ObjectDetection/OBB/CGEarthEye-Giant-784-DIORR.py \
+    Path/To/Your/Weight/obb_model.pth
+## 单机多卡
+CUDA_VISIBLE_DEVICES=0,1,2,3 bash tools/dist_test_obb.sh \
+    config/ObjectDetection/OBB/CGEarthEye-Giant-784-DIORR.py \
+    Path/To/Your/Weight/obb_model.pth 4
+```
 
 ```bash
 # Inference for Region Detection-OBB task
