@@ -92,6 +92,60 @@ pip install -r requirements.txt
 ```
 
 #### 语义分割
+```bash
+|-datasets/SemanticSegmentation
+|----cropland
+|    |---train
+|        |---Img
+|            |---LC_01_000001.png
+|            |---LC_01_000002.png
+|            |---    ···
+|        |---Label
+|            |---LC_01_000001.png
+|            |---LC_01_000002.png
+|            |---    ···
+|    |---val
+|        |---Img
+|            |---LC_01_000001.png
+|            |---LC_01_000002.png
+|            |---    ···
+|        |---Label
+|            |---LC_01_000001.png
+|            |---LC_01_000002.png
+|            |---    ···
+|    |---test
+|        |---Img
+|            |---LC_01_000001.png
+|            |---LC_01_000002.png
+|            |---    ···
+|        |---Label
+|            |---LC_01_000001.png
+|            |---LC_01_000002.png
+|            |---    ···
+
+|----ISAID
+|    |---img_dir
+|        |---train
+|            |---P0003_0_896_0_896.png
+|            |---    ···
+|        |---val
+|            |---P0003_0_896_0_896.png
+|            |---    ···
+|        |---test
+|            |---P0003_0_896_0_896.png
+|            |---    ···
+|    |---ann_dir
+|        |---train
+|            |---P0003_0_896_0_896_instance_color_RGB.png
+|            |---    ···
+|        |---val
+|            |---P0003_0_896_0_896_instance_color_RGB.png
+|            |---    ···
+|        |---test
+|            |---P0003_0_896_0_896_instance_color_RGB.png
+|            |---    ···
+...
+```
 
 #### 变化检测
 - [LEVIR-CD](https://opendatalab.com/OpenDataLab/LEVIR-CD)
@@ -197,19 +251,11 @@ python tools/dist_train_sc.sh \
 
 ```bash
 # 单机单卡
-python inference.py \
-    --checkpoint_path <path_to_the_checkpoint_you_want> \
-    --image_path image_samples/IMG_CT/[IMG_CT]_016_DIOR_25156_13931_ori.png \
-    --post_process_type IMG_CT \
-    --prompt "Count the number of ship."
+python ./tools/train_ss.py config/SemanticSegmentation/CGEarthEye-Giant-518-ISAID
 ```
 ```bash
 # 单机多卡
-python inference.py \
-    --checkpoint_path <path_to_the_checkpoint_you_want> \
-    --image_path image_samples/IMG_CAP/[IMG_CAP]_010_RSICD_208_church_56_ori.png \
-    --post_process_type IMG_CAP \
-    --prompt "Describe the image."
+bash ./tools/dist_train_ss.sh config/SemanticSegmentation/CGEarthEye-Giant-518-ISAID 4
 ```
 #### 变化检测
 
@@ -255,6 +301,16 @@ python tools/dist_test_sc.sh \
 ```
 
 #### 语义分割
+```bash
+# 单机单卡
+python tools/test_ss.py \
+    config/SemanticSegmentation/CGEarthEye-Giant-518-ISAID.py
+```
+```bash
+# 单机多卡
+python tools/dist_test_ss.sh \
+    config/SemanticSegmentation/CGEarthEye-Giant-518-ISAID.py
+```
 
 #### 变化检测
 ```bash
