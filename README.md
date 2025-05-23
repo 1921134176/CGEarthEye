@@ -6,8 +6,7 @@
   <img width="300" alt="image" src="assets/logo.png">
   <br>
 </div>
-
-[\[🚀 Quick Start\]](https://www.jl1mall.com/) [\[📖 Report\]](./report) [\[📹 Weight\]](https://pan.baidu.com/s/12bds0ZTMwyRVgv7Nkq51Aw?pwd=cgwx)[\[:mahjong: Chinese\]](./README-ZH.md)
+[\[🚀 Quick Start\]](https://www.jl1mall.com/) [\[📖 Report\]](./report) [\[📹 Weight\]](https://pan.baidu.com/s/12bds0ZTMwyRVgv7Nkq51Aw?pwd=cgwx)[\[🀄 Chinese\]](./README-ZH.md)
 
 
 ![CGEarthEye](assets/model-en.png)
