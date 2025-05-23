@@ -1,11 +1,12 @@
 <div align="center">
 
-# <img width="60" alt="image" src="assets/gaofen.png"> CGEarthEye: Construction and Application of Jilin-1 Remote Sensing Foundation Model
+# <img width="60" alt="image" src="assets/gaofen.png"> CGEarthEye: 吉林一号大模型构建与应用
 
 <div align="center">
-  <img width="500" alt="image" src="assets/logo.png">
+  <img width="300" alt="image" src="assets/logo.png">
   <br>
 </div>
+
 [\[🚀 Quick Start\]](https://www.jl1mall.com/) [\[📖 Report\]](./report) [\[📹 Weight\]](https://pan.baidu.com/s/12bds0ZTMwyRVgv7Nkq51Aw?pwd=cgwx)
 
 
