@@ -1,6 +1,6 @@
 <div align="center">
 
-# <img width="60" alt="image" src="assets/gaofen.png"> CGEarthEye: 吉林一号大模型构建与应用
+# <img width="60" alt="image" src="assets/gaofen.png"> CGEarthEye: Construction and Application of Jilin-1 Remote Sensing Foundation Model
 
 <div align="center">
   <img width="300" alt="image" src="assets/logo.png">
