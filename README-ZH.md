@@ -92,6 +92,10 @@ pip install -r requirements.txt
 ```
 
 #### 语义分割
+
+- [AID](captain-whu.github.io/AID/)
+- [NWPU_RESISC45](https://gcheng-nwpu.github.io/#Datasets)
+
 ```bash
 |-datasets/SemanticSegmentation
 |----cropland
