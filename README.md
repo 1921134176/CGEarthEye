@@ -9,7 +9,7 @@
 [\[🚀 Quick Start\]](https://www.jl1mall.com/) [\[📖 Report\]](./report) [\[📹 Weight\]](https://pan.baidu.com/s/12bds0ZTMwyRVgv7Nkq51Aw?pwd=cgwx)[\[:mahjong: Chinese\]](./README-ZH.md)
 
 
-![CGEarthEye](assets/model.png)
+![CGEarthEye](assets/model-en.png)
 
 </div>
 
@@ -42,9 +42,10 @@ To enhance the intelligent application of Jilin-1 remote sensing satellite image
 In terms of practical applications, leveraging CGEarthEye, we have fine-tuned 20 application models that are now live on the Jilin-1 Platform--[https://www.jl1mall.com/](吉林一号网)。
 
 <div align="center">
-  <img width="500" alt="image" src="assets/application.png">
+  <img width="500" alt="image" src="assets/application-en.png">
   <br>
 </div>
+
 
 
 ## Fine-tuning
